@@ -53,6 +53,8 @@ Raster charts are not mathematically lossless sources for the original data. The
    - Generate overlays showing source image, fitted axes/ticks, selected pixels/marks, plot box, and reconstructed values.
    - Reconstruct the extracted series as an image or plot and compare it with the source.
    - Verify row counts, calibration metadata, and peak/key-point values from files rather than memory.
+   - Open the grounding overlay before finalizing. Confirm tick residuals are reported in pixels, selected marks align with visible marks, and every final table row traces back to a saved pixel or marker record.
+   - If the required artifacts cannot be generated, withhold numeric certainty and explain which evidence is missing.
 
 ## Minimum Deliverables
 
@@ -67,6 +69,8 @@ Save enough artifacts for another agent or user to audit the extraction:
 - `reconstructed-*.png`: plot or image reconstructed from extracted values.
 - `extraction.log` or command notes sufficient to reproduce the run.
 - `method-and-results.md`: concise explanation of calibration, extraction decisions, limitations, and where final tables live.
+
+For partial or triage tasks, scale the artifact set down but keep the evidence chain intact: preserve the source reference, calibration notes, annotated evidence or overlay, extracted value(s), and limitations. Produce the full CSV/log bundle when the user asks for a complete extraction.
 
 ## Quality Bar
 

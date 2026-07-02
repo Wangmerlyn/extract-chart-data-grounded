@@ -1,4 +1,4 @@
 interface:
   display_name: "Grounded Chart Data Extraction"
   short_description: "Extract chart data from pixel-grounded visual markers."
-  default_prompt: "Extract data from this chart using visual marker grounding. Save pixel evidence, calibration metadata, overlays, and unit-converted tables."
+  default_prompt: "Use $extract-chart-data-grounded to extract data from this chart using pixel-grounded marker evidence. Save calibration metadata, raw pixel/marker tables, grounding overlays, reconstructed plots, and a final unit-converted table with limitations."

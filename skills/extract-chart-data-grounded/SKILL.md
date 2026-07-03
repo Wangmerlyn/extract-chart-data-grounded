@@ -1,6 +1,13 @@
 ---
 name: extract-chart-data-grounded
 description: Use when Codex needs to extract, digitize, recover, or unit-convert numeric data from raster chart images, scanned plots, chromatograms, line charts, scatter plots, bar charts, or screenshots where visual marker grounding, axis calibration, tick detection, overlays, pixel evidence, or chart-to-table precision matters.
+license: CC-BY-4.0
+metadata:
+  author: "Siyuan Wang / Wangmerlyn"
+  source: "https://github.com/Wangmerlyn/extract-chart-data-grounded"
+  license_url: "https://creativecommons.org/licenses/by/4.0/"
+  version: "1.0.0"
+  tags: "chart-extraction, data-digitization, scientific-figures, image-analysis, calibration, grounded-ai"
 ---
 
 # Extract Chart Data Grounded

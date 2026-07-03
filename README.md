@@ -41,11 +41,15 @@ For quick feasibility checks or single-value reads, the skill still requires a s
 
 ## Quick Marketplace Review
 
-- Skill file: `SKILL.md` at the repository root.
+- Skill file: `skills/extract-chart-data-grounded/SKILL.md`.
 - Skill name: `extract-chart-data-grounded`.
+- Skill metadata: `license: CC-BY-4.0` plus `metadata.author`, `metadata.source`, `metadata.license_url`, `metadata.version`, and string discovery tags in YAML frontmatter.
+- Catalog hint: `skills.sh.json` groups the skill under Data & AI and Research for tools that read skills.sh-compatible metadata.
 - Runtime dependencies: none declared. The skill instructs agents to choose appropriate local image-processing tools for the chart at hand.
-- Local discovery: `npx skills add . --list` discovers the root skill from the current checkout.
+- Local discovery: `npx skills add . --list` discovers the canonical nested skill from the current checkout.
 - Public discovery: `npx skills add Wangmerlyn/extract-chart-data-grounded --list` discovers the published GitHub repo.
+- SkillsMP fit: SkillsMP aggregates open-source Agent Skills from public GitHub repositories using the `SKILL.md` format. It does not appear to force marketplace relicensing, but the exact skill was not yet returned by its public API search on 2026-07-03.
+- Hermes fit: Hermes can install the raw `SKILL.md` URL and add this repository as a GitHub tap because the skill lives under the default `skills/` catalog layout.
 - ClawHub is not a publication target because ClawHub-published skills are released under MIT-0, which conflicts with this repository's attribution requirement.
 
 See [docs/marketplace-publishing.md](docs/marketplace-publishing.md) for current market-specific steps and login requirements.
@@ -55,8 +59,11 @@ See [docs/marketplace-publishing.md](docs/marketplace-publishing.md) for current
 Codex local skill install:
 
 ```bash
-git clone https://github.com/Wangmerlyn/extract-chart-data-grounded \
-  "${CODEX_HOME:-$HOME/.codex}/skills/extract-chart-data-grounded"
+npx skills add Wangmerlyn/extract-chart-data-grounded \
+  --skill extract-chart-data-grounded \
+  --agent codex \
+  --global \
+  --yes
 ```
 
 skills.sh compatible install:
@@ -69,12 +76,28 @@ npx skills add Wangmerlyn/extract-chart-data-grounded \
   --yes
 ```
 
+Manual install from a clone:
+
+```bash
+git clone https://github.com/Wangmerlyn/extract-chart-data-grounded
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -a extract-chart-data-grounded/skills/extract-chart-data-grounded \
+  "${CODEX_HOME:-$HOME/.codex}/skills/"
+```
+
 Hermes direct URL install:
 
 ```bash
 hermes skills install \
-  https://raw.githubusercontent.com/Wangmerlyn/extract-chart-data-grounded/main/SKILL.md \
+  https://raw.githubusercontent.com/Wangmerlyn/extract-chart-data-grounded/main/skills/extract-chart-data-grounded/SKILL.md \
   --name extract-chart-data-grounded
+```
+
+Hermes tap install:
+
+```bash
+hermes skills tap add Wangmerlyn/extract-chart-data-grounded
+hermes skills install Wangmerlyn/extract-chart-data-grounded/extract-chart-data-grounded
 ```
 
 ## Example User Requests
@@ -101,23 +124,15 @@ Important marketplace note: ClawHub currently publishes skills under MIT-0 and d
 
 ## Development
 
-This repo intentionally keeps the runtime skill small. Human-facing packaging and marketplace notes belong in `README.md`, `AGENTS.md`, or `docs/`, while agent-facing extraction procedure belongs in `SKILL.md`.
+This repo intentionally keeps the runtime skill small. Human-facing packaging and marketplace notes belong in `README.md`, `AGENTS.md`, or `docs/`, while agent-facing extraction procedure belongs in `skills/extract-chart-data-grounded/SKILL.md`.
 
 Basic validation:
 
 ```bash
-python - <<'PY'
-import pathlib, yaml
-text = pathlib.Path("SKILL.md").read_text()
-assert text.startswith("---\n")
-frontmatter = text.split("---\n", 2)[1]
-data = yaml.safe_load(frontmatter)
-assert data["name"] == "extract-chart-data-grounded"
-assert data["description"]
-yaml.safe_load(pathlib.Path("agents/openai.yaml").read_text())
-print("skill metadata ok")
-PY
-
+python scripts/validate_package.py
 git diff --check
-npx skills add . --list
+tmpdir="$(mktemp -d)"
+trap 'rm -rf "$tmpdir"' EXIT
+cp -a . "$tmpdir/repo"
+npx --yes skills add "$tmpdir/repo" --list
 ```

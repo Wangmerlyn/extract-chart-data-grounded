@@ -39,5 +39,5 @@ npx skills add . --list
 
 - Do not publish this repository to ClawHub while the owner requires `CC-BY-4.0` attribution. ClawHub publishes skills under MIT-0 and cannot enforce the repository attribution requirement.
 - SkillDock real upload requires SkillDock OAuth or a saved token.
-- Hermes can consume the raw `SKILL.md` URL directly; a GitHub tap layout can be added later if this repo becomes a multi-skill catalog.
+- Hermes can consume the raw `SKILL.md` URL directly. Hermes GitHub publish creates a PR to a chosen catalog repo under `skills/<skill-name>/`; `hermes skills tap add` expects a `skills/` layout by default.
 - Do not claim a marketplace submission is complete unless the platform returned a successful publish/install confirmation.

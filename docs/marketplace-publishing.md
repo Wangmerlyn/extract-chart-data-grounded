@@ -1,6 +1,6 @@
 # Marketplace Publishing Notes
 
-Research date: 2026-07-02.
+Research date: 2026-07-03.
 
 This document tracks realistic publication and promotion paths for `Wangmerlyn/extract-chart-data-grounded`. It separates what can be prepared from this repository from steps that need the owner's marketplace login.
 
@@ -20,7 +20,7 @@ This document tracks realistic publication and promotion paths for `Wangmerlyn/e
 | Platform | Current fit | Publish path | Login needed | Notes |
 | --- | --- | --- | --- | --- |
 | ClawHub | Not a target. | Do not publish while `CC-BY-4.0` attribution is required. | Yes for real publish. | ClawHub docs say published skills are released under MIT-0 and per-skill license overrides are not supported, so this platform conflicts with the repo's attribution requirement. |
-| Hermes Agent | Good for direct URL install. | `hermes skills install https://raw.githubusercontent.com/Wangmerlyn/extract-chart-data-grounded/main/SKILL.md --name extract-chart-data-grounded`. | No for public raw URL install. | Hermes also integrates skills.sh, LobeHub, well-known URLs, direct GitHub installs, and custom GitHub taps. A tap layout can be added later if this becomes a multi-skill catalog. |
+| Hermes Agent | Good for direct URL install; publishable to a GitHub catalog PR when a target catalog repo is chosen. | `hermes skills install https://raw.githubusercontent.com/Wangmerlyn/extract-chart-data-grounded/main/SKILL.md --name extract-chart-data-grounded`, or `hermes skills publish /absolute/path/to/skill --to github --repo owner/repo` for a catalog submission. | No for public raw URL install. GitHub publish uses `GITHUB_TOKEN`/`GH_TOKEN` or `gh auth token`. | Hermes publish creates a PR that uploads files under `skills/<skill-name>/` in the target repo after a Skills Guard scan. `hermes skills tap add owner/repo` scans `skills/` by default, so this root-skill repo needs a catalog layout before it works well as a tap. |
 | skills.sh / Vercel Labs skills CLI | Good. Verified via CLI list. | `npx skills add Wangmerlyn/extract-chart-data-grounded --list`. Users can install with `--skill extract-chart-data-grounded`. | No for public repo installs. | The CLI resolves GitHub repos, full URLs, direct skill paths, git URLs, and local paths. |
 | SkillDock | Plausible. Current root is a clean skill folder. | `skilldock skill verify "$SKILL_PATH"` then `skilldock skill upload --namespace "$NAMESPACE" --slug extract-chart-data-grounded --version "$VERSION" --path "$SKILL_PATH" --dry-run`. | Yes for upload; Google OAuth or saved token. | Docs recommend verifying and dry-run uploading before release. |
 | LobeHub skills catalog | Possible but not fully verified without an account/form. | Inspect the public submit flow, then use this README and `SKILL.md` as the listing source. | Likely yes. | Hermes lists LobeHub as an integrated community marketplace source. |
@@ -29,7 +29,7 @@ This document tracks realistic publication and promotion paths for `Wangmerlyn/e
 
 ## Hermes Promotion
 
-Use direct URL install first because the repo is a single root skill:
+Use direct URL install first because the repo is a single root skill. This path is verified with `hermes skills inspect` and does not need a marketplace account:
 
 ```bash
 hermes skills install \
@@ -37,13 +37,24 @@ hermes skills install \
   --name extract-chart-data-grounded
 ```
 
-If the repository later becomes a multi-skill catalog, add a `skills/extract-chart-data-grounded/` folder and use:
+Hermes also has a GitHub publish flow:
+
+```bash
+hermes skills publish \
+  /root/new_test/extract-chart-data-grounded \
+  --to github \
+  --repo owner/skills-catalog
+```
+
+This command scans the skill, forks the target repository, uploads the skill under `skills/extract-chart-data-grounded/`, and opens a PR. Use it only after choosing the target catalog repository; do not point it at ClawHub.
+
+If this repository should become its own Hermes tap, add a generated or maintained `skills/extract-chart-data-grounded/` copy of the skill files and use:
 
 ```bash
 hermes skills tap add Wangmerlyn/extract-chart-data-grounded
 ```
 
-Do not add the tap layout now unless the duplicate `SKILL.md` can be kept in sync automatically.
+Do not add the tap layout unless the duplicate `SKILL.md` can be kept in sync automatically.
 
 ## SkillDock Workflow
 
@@ -68,6 +79,7 @@ Remove `--dry-run` only after the owner confirms namespace and version.
 ## What Still Needs Owner Login
 
 - ClawHub live publish: intentionally not pursued because ClawHub releases skills under MIT-0 rather than this repo's `CC-BY-4.0` attribution terms.
+- Hermes GitHub publish: needs a chosen target catalog repo. It can use this machine's authenticated `gh` token, but it will create a fork and PR to that target.
 - SkillDock live upload: needs Google OAuth or saved SkillDock token and namespace ownership.
 - LobeHub submission: likely needs a signed-in submitter; unauthenticated mechanics were not fully inspectable.
 - GitHub `gh skill`: local GitHub CLI on this machine does not expose the command yet.
